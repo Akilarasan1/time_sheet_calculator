@@ -17,7 +17,7 @@ def spent_hours(in_times, out_times):
     return sum(total_spent, timedelta())
 
 # Route to render the input form
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def read_form(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
