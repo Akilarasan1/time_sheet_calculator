@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+        <h1 class="text-2xl font-bold text-center mb-6">Time Sheet Calculator</h1>
+        <form method="post" action="/calculate/" class="space-y-4">
+            <textarea 
+                name="raw_time" 
+                rows="5" 
+                placeholder="Enter time (e.g., '08:46:12 AM In 01:30:50 PM Out')" 
+                required 
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            ></textarea>
+            <button 
+                type="submit" 
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+            >
+                Calculate
+            </button>
+        </form>
+        {% if result %}
+            <p class="mt-4 text-green-500 text-lg font-semibold">{{ result }}</p>
+        {% endif %}
+        {% if error %}
+            <p class="mt-4 text-red-500 text-lg font-semibold">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
