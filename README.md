@@ -12,4 +12,6 @@ Deployed using **FastAPI + Render** with a clean **HTML/JavaScript** frontend.
 - 🖥️ Interactive web UI built with **HTML + JavaScript**
 - ⚡ Backend powered by **Python (FastAPI)**
 - 🌐 Deployed on **Render.com**
-- 🧾 Example input:  
+- 🧾 Example input: **08:46:12 AM In 01:30:50 PM Out  01:46:12 AM In**
+
+  
