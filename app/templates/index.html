@@ -5,31 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
         <h1 class="text-2xl font-bold text-center mb-6">Time Sheet Calculator</h1>
-        <form method="post" action="/calculate/" class="space-y-4">
+
+        <form id="timeForm" method="post" action="/calculate/" class="space-y-4">
             <textarea 
+                id="rawTimeInput"
                 name="raw_time" 
                 rows="5" 
-                placeholder="Enter time (e.g., '08:46:12 AM In 01:30:50 PM Out')" 
+                placeholder="Enter time entries (e.g., '08:46:12 AM In 01:30:50 PM Out')" 
                 required 
                 class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ></textarea>
-            <button 
-                type="submit" 
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
-            >
-                Calculate
-            </button>
+            >{{ raw_time or "" }}</textarea>
+
+            <div class="flex space-x-3">
+                <button 
+                    type="submit" 
+                    class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+                >
+                    Calculate
+                </button>
+                <button 
+                    type="button"
+                    id="clearBtn"
+                    class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+                >
+                    Clear
+                </button>
+            </div>
         </form>
-        {% if result %}
-            <p class="mt-4 text-green-500 text-lg font-semibold">{{ result }}</p>
-        {% endif %}
-        {% if error %}
-            <p class="mt-4 text-red-500 text-lg font-semibold">{{ error }}</p>
-        {% endif %}
+
+        <div id="resultContainer" class="mt-4 fade-in">
+            {% if result %}
+                <p class="text-green-500 text-lg font-semibold">{{ result }}</p>
+            {% endif %}
+            {% if error %}
+                <p class="text-red-500 text-lg font-semibold">{{ error }}</p>
+            {% endif %}
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const clearBtn = document.getElementById('clearBtn');
+            const rawTimeInput = document.getElementById('rawTimeInput');
+            const resultContainer = document.getElementById('resultContainer');
+
+            clearBtn.addEventListener('click', function() {
+                rawTimeInput.value = '';
+                resultContainer.innerHTML = '';
+                rawTimeInput.focus();
+            });
+        });
+    </script>
 </body>
 </html>
