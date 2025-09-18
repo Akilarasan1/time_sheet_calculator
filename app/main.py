@@ -19,7 +19,7 @@ def spent_hours(in_times, out_times):
 # Route to render the input form
 @app.get("/", response_class=HTMLResponse)
 async def read_form(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request, "raw_time": ""})
 
 # Route to handle form submission and calculations
 @app.post("/calculate/", response_class=HTMLResponse)
@@ -30,14 +30,16 @@ async def calculate_time(request: Request, raw_time: str = Form(...)):
         time_blocks, in_times, out_times = [], [], []
         total_hours_td = timedelta(hours=8, minutes=30)
 
-        # Group time entries into blocks of 3
-        if len(time_entries) % 3 == 0:
-            time_blocks = [time_entries[i:i + batch_size] for i in range(0, len(time_entries), batch_size)]
-        else:
+        # Validate input length
+        if len(time_entries) % 3 != 0:
             return templates.TemplateResponse("index.html", {
                 "request": request,
-                "error": "Invalid input format. Ensure entries are in 'hh:mm:ss AM/PM In/Out' format."
+                "error": "Invalid input format. Ensure entries are in 'hh:mm:ss AM/PM In/Out' format.",
+                "raw_time": raw_time
             })
+
+        # Group time entries into blocks of 3
+        time_blocks = [time_entries[i:i + batch_size] for i in range(0, len(time_entries), batch_size)]
 
         # Separate "In" and "Out" times
         for block in time_blocks:
@@ -46,32 +48,31 @@ async def calculate_time(request: Request, raw_time: str = Form(...)):
             elif "Out" in block:
                 out_times.append(" ".join(block[:-1]))
 
+        # Calculate remaining or completed time
+        total_spent = spent_hours(in_times, out_times)
         if len(in_times) > len(out_times):
-            total_spent = spent_hours(in_times, out_times)
             remaining_time = total_hours_td - total_spent
             last_in = datetime.strptime(in_times[-1], "%I:%M:%S %p")
             expected_logout = last_in + remaining_time
-            return templates.TemplateResponse("index.html", {
-                "request": request,
-                "result": f"You can leave at {expected_logout.strftime('%I:%M:%S %p')}."
-            })
-
-        # Calculate total time spent
-        total_spent = spent_hours(in_times, out_times)
-        if total_spent >= total_hours_td:
-            return templates.TemplateResponse("index.html", {
-                "request": request,
-                "result": f"You have completed your required hours. Total time spent: {total_spent}."
-            })
+            result_text = f"You can leave at {expected_logout.strftime('%I:%M:%S %p')}."
         else:
-            remaining_time = total_hours_td - total_spent
-            return templates.TemplateResponse("index.html", {
-                "request": request,
-                "result": f"You need to stay for {remaining_time}."
-            })
+            if total_spent >= total_hours_td:
+                result_text = f"You have completed your required hours. Total time spent: {total_spent}."
+            else:
+                remaining_time = total_hours_td - total_spent
+                result_text = f"You need to stay for {remaining_time}."
+
+        # Return template with result and input preserved
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "result": result_text,
+            "raw_time": raw_time
+        })
+
     except Exception as e:
         logging.error(f"Error in calculate_time: {e}")
         return templates.TemplateResponse("index.html", {
             "request": request,
-            "error": "An unexpected error occurred. Please check your input."
+            "error": "An unexpected error occurred. Please check your input.",
+            "raw_time": raw_time
         })
