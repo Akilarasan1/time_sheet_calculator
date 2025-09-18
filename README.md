@@ -1,23 +1,15 @@
-⏱️ Time Sheet Calculator
+# 🕒 Time Sheet Calculator
 
-Easily calculate total working hours from IN/OUT time entries.
-Example input:
+A simple web tool to calculate total working hours based on **IN/OUT time** inputs.  
+Deployed using **FastAPI + Render** with a clean **HTML/JavaScript** frontend.
 
-08:46:12 AM In 01:30:50 PM Out
+🔗 **Live Demo**: [Time Sheet Calculator](https://time-sheet-calculator.onrender.com/)
 
+---
 
-This project is built with Python, FastAPI, HTML, and JavaScript, and deployed on Render.
-
-👉 Live Demo
-
-🚀 Features
-
-Input IN/OUT times in hh:mm:ss AM/PM format.
-
-Automatic calculation of total working hours.
-
-Simple and intuitive UI.
-
-FastAPI backend for time calculation.
-
-Deployed and accessible online.
+## 🚀 Features
+- ⏱️ Calculate worked hours using **In/Out timestamps**
+- 🖥️ Interactive web UI built with **HTML + JavaScript**
+- ⚡ Backend powered by **Python (FastAPI)**
+- 🌐 Deployed on **Render.com**
+- 🧾 Example input:  
