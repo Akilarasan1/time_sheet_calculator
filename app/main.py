@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from datetime import datetime, timedelta
 import logging
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
@@ -16,10 +17,18 @@ def spent_hours(in_times, out_times):
     ]
     return sum(total_spent, timedelta())
 
+
+
+
 # Route to render the input form
 @app.get("/", response_class=HTMLResponse)
 async def read_form(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "raw_time": ""})
+
+@app.get("/calculate/")
+async def calculate_get_redirect():
+    return RedirectResponse(url="/")
+
 
 # Route to handle form submission and calculations
 @app.post("/calculate/", response_class=HTMLResponse)
@@ -76,3 +85,4 @@ async def calculate_time(request: Request, raw_time: str = Form(...)):
             "error": "An unexpected error occurred. Please check your input.",
             "raw_time": raw_time
         })
+
